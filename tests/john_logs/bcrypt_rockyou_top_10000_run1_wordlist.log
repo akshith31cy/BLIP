@@ -1,0 +1,8 @@
+Using default input encoding: UTF-8
+Loaded 1 password hash (bcrypt [Blowfish 32/64 X3])
+Cost 1 (iteration count) is 4096 for all loaded hashes
+Will run 16 OpenMP threads
+Note: Passwords longer than 24 [worst case UTF-8] to 72 [ASCII] truncated (property of the hash)
+Press Ctrl-C to abort, or send SIGUSR1 to john process for status
+0g 0:00:01:30 DONE (2025-11-24 15:07) 0g/s 110.8p/s 110.8c/s 110.8C/s ladygaga..kupal
+Session completed

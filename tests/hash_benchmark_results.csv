@@ -1,0 +1,4 @@
+Algorithm,Time (s),Passwords_Tested
+SHA256,0.0,1000
+bcrypt,371.24,500
+Argon2,9.33,100

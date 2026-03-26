@@ -1,0 +1,19 @@
+Using default input encoding: UTF-8
+Loaded 1 password hash (bcrypt [Blowfish 32/64 X3])
+Cost 1 (iteration count) is 4096 for all loaded hashes
+Will run 16 OpenMP threads
+Press 'q' or Ctrl-C to abort, 'h' for help, almost any other key for status
+0g 0:00:00:48  0g/s 124.2p/s 124.2c/s 124.2C/s mommma..myseya
+Remaining hashes    1 (0 removed)
+Remaining salts     1 (0 removed)
+Time in seconds     48.68 (48.68 new)
+Successful guesses  0 (0 new, 0 g/s)
+Passwords tested    6048 (6048 new, 124.2 p/s)
+ dupe suppressor    is disabled
+ and it accepted    0 (0.00%, 0 p/s)
+        rejected    0 (0.00%, 0 p/s)
+    out of total    0 (0 p/s)
+Hash computations   6048 (6048 new, 124.2 c/s)
+Hash combinations   6048 (6048 new, 124.2 C/s)
+Wait...0g 0:00:05:00  0g/s 107.4p/s 107.4c/s 107.4C/s 114134..103624
+Session stopped (max run-time reached)

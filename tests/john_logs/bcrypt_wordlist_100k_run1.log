@@ -1,0 +1,44 @@
+Using default input encoding: UTF-8
+Loaded 1 password hash (bcrypt [Blowfish 32/64 X3])
+Cost 1 (iteration count) is 4096 for all loaded hashes
+Will run 16 OpenMP threads
+Note: Passwords longer than 24 [worst case UTF-8] to 72 [ASCII] truncated (property of the hash)
+Press 'q' or Ctrl-C to abort, 'h' for help, almost any other key for status
+0g 0:00:00:06 0.96% (ETA: 14:11:08) 0g/s 138.5p/s 138.5c/s 138.5C/s chichi..mariel
+Remaining hashes    1 (0 removed)
+Remaining salts     1 (0 removed)
+Time in seconds     6.24 (6.24 new)
+Successful guesses  0 (0 new, 0 g/s)
+Passwords tested    864 (864 new, 138.5 p/s)
+ dupe suppressor    is disabled
+ and it accepted    0 (0.00%, 0 p/s)
+        rejected    0 (0.00%, 0 p/s)
+    out of total    0 (0 p/s)
+Hash computations   864 (864 new, 138.5 c/s)
+Hash combinations   864 (864 new, 138.5 C/s)
+0g 0:00:10:04 64.40% (ETA: 14:16:22) 0g/s 107.0p/s 107.0c/s 107.0C/s SEXY17..26101990
+Remaining hashes    1 (0 removed)
+Remaining salts     1 (0 removed)
+Time in seconds     604.06 (597.82 new)
+Successful guesses  0 (0 new, 0 g/s)
+Passwords tested    64656 (63792 new, 106.7 p/s)
+ dupe suppressor    is disabled
+ and it accepted    0 (0.00%, 0 p/s)
+        rejected    0 (0.00%, 0 p/s)
+    out of total    0 (0 p/s)
+Hash computations   64656 (63792 new, 106.7 c/s)
+Hash combinations   64656 (63792 new, 106.7 C/s)
+0g 0:00:13:31 86.53% (ETA: 14:16:23) 0g/s 106.6p/s 106.6c/s 106.6C/s 880618..25091990
+Remaining hashes    1 (0 removed)
+Remaining salts     1 (0 removed)
+Time in seconds     811.89 (207.83 new)
+Successful guesses  0 (0 new, 0 g/s)
+Passwords tested    86544 (21888 new, 105.3 p/s)
+ dupe suppressor    is disabled
+ and it accepted    0 (0.00%, 0 p/s)
+        rejected    0 (0.00%, 0 p/s)
+    out of total    0 (0 p/s)
+Hash computations   86544 (21888 new, 105.3 c/s)
+Hash combinations   86544 (21888 new, 105.3 C/s)
+0g 0:00:15:39 DONE (2025-11-24 14:16) 0g/s 106.4p/s 106.4c/s 106.4C/s schmetterling..sagar
+Session completed

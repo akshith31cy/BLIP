@@ -1,0 +1,10 @@
+Using default input encoding: UTF-8
+Loaded 1 password hash (bcrypt [Blowfish 32/64 X3])
+Cost 1 (iteration count) is 4096 for all loaded hashes
+Will run 16 OpenMP threads
+Note: Passwords longer than 24 [worst case UTF-8] to 72 [ASCII] truncated (property of the hash)
+Press Ctrl-C to abort, or send SIGUSR1 to john process for status
+Enabling duplicate candidate password suppressor using 256 MiB
+Failed to use huge pages (not pre-allocated via sysctl? that's fine)
+Wait...0g 0:00:10:00 0.27% (ETA: 2025-11-27 04:02) 0g/s 105.4p/s 105.4c/s 105.4C/s reggae7..password137
+Session stopped (max run-time reached)

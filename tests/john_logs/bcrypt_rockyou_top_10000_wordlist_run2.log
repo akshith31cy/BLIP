@@ -1,0 +1,57 @@
+Using default input encoding: UTF-8
+Loaded 1 password hash (bcrypt [Blowfish 32/64 X3])
+Cost 1 (iteration count) is 4096 for all loaded hashes
+Will run 16 OpenMP threads
+Note: Passwords longer than 24 [worst case UTF-8] to 72 [ASCII] truncated (property of the hash)
+Press Ctrl-C to abort, or send SIGUSR1 to john process for status
+0g 0:00:00:03 4.20% (ETA: 07:55:51) 0g/s 95.36p/s 95.36c/s 95.36C/s adidas..nicole1
+0g 0:00:00:04 5.56% (ETA: 07:55:52) 0g/s 95.36p/s 95.36c/s 95.36C/s 12345678910..parola
+0g 0:00:00:07 8.34% (ETA: 07:56:04) 0g/s 95.87p/s 95.87c/s 95.87C/s dreamer..felipe
+0g 0:00:00:09 9.74% (ETA: 07:56:13) 0g/s 94.12p/s 94.12c/s 94.12C/s chichi..mariel
+0g 0:00:00:10 11.14% (ETA: 07:56:10) 0g/s 94.29p/s 94.29c/s 94.29C/s bullshit..summer1
+0g 0:00:00:12 12.56% (ETA: 07:56:16) 0g/s 94.27p/s 94.27c/s 94.27C/s 753951..rangers1
+0g 0:00:00:15 15.36% (ETA: 07:56:18) 0g/s 94.12p/s 94.12c/s 94.12C/s rachelle..danilo
+0g 0:00:00:16 16.80% (ETA: 07:56:16) 0g/s 94.29p/s 94.29c/s 94.29C/s alexis1..argentina
+0g 0:00:00:18 18.19% (ETA: 07:56:19) 0g/s 93.86p/s 93.86c/s 93.86C/s 2hot4u..alaska
+0g 0:00:00:21 20.98% (ETA: 07:56:21) 0g/s 94.21p/s 94.21c/s 94.21C/s harris..myfamily
+0g 0:00:00:22 22.39% (ETA: 07:56:19) 0g/s 94.28p/s 94.28c/s 94.28C/s monalisa..abcdefgh
+0g 0:00:00:24 23.81% (ETA: 07:56:21) 0g/s 94.43p/s 94.43c/s 94.43C/s skyblue..gwapa
+0g 0:00:00:27 26.62% (ETA: 07:56:22) 0g/s 94.77p/s 94.77c/s 94.77C/s star123..outlaw
+0g 0:00:00:28 28.05% (ETA: 07:56:20) 0g/s 94.87p/s 94.87c/s 94.87C/s onlyme..soccer9
+0g 0:00:00:30 29.48% (ETA: 07:56:22) 0g/s 94.80p/s 94.80c/s 94.80C/s skater1..love06
+0g 0:00:00:33 32.34% (ETA: 07:56:23) 0g/s 95.39p/s 95.39c/s 95.39C/s grecia..pucca
+0g 0:00:00:34 33.77% (ETA: 07:56:21) 0g/s 95.75p/s 95.75c/s 95.75C/s penis..lakers1
+0g 0:00:00:37 36.63% (ETA: 07:56:22) 0g/s 96.41p/s 96.41c/s 96.41C/s corazones..street
+0g 0:00:00:38 38.08% (ETA: 07:56:20) 0g/s 96.54p/s 96.54c/s 96.54C/s stephy..tripleh
+0g 0:00:00:40 39.50% (ETA: 07:56:22) 0g/s 96.89p/s 96.89c/s 96.89C/s tammy..pokpok
+0g 0:00:00:42 42.39% (ETA: 07:56:20) 0g/s 97.37p/s 97.37c/s 97.37C/s sharpay..delgado
+0g 0:00:00:44 43.84% (ETA: 07:56:21) 0g/s 97.56p/s 97.56c/s 97.56C/s blue32..987456321
+0g 0:00:00:47 46.71% (ETA: 07:56:21) 0g/s 97.67p/s 97.67c/s 97.67C/s terminator..summer05
+0g 0:00:00:48 48.19% (ETA: 07:56:20) 0g/s 97.88p/s 97.88c/s 97.88C/s sabrina1..FUCKYOU
+0g 0:00:00:51 51.12% (ETA: 07:56:20) 0g/s 98.32p/s 98.32c/s 98.32C/s sahabat..chaparrita
+0g 0:00:00:52 52.56% (ETA: 07:56:19) 0g/s 98.48p/s 98.48c/s 98.48C/s caleb1..lightbulb
+0g 0:00:00:55 55.44% (ETA: 07:56:20) 0g/s 98.79p/s 98.79c/s 98.79C/s hithere..kidrock
+0g 0:00:00:56 56.89% (ETA: 07:56:19) 0g/s 98.91p/s 98.91c/s 98.91C/s july23..myboo
+0g 0:00:00:58 58.38% (ETA: 07:56:20) 0g/s 99.07p/s 99.07c/s 99.07C/s mirella..march23
+0g 0:00:01:00 61.28% (ETA: 07:56:18) 0g/s 99.33p/s 99.33c/s 99.33C/s chachi..russia
+0g 0:00:01:02 62.76% (ETA: 07:56:19) 0g/s 99.45p/s 99.45c/s 99.45C/s redbone..june11
+0g 0:00:01:05 65.66% (ETA: 07:56:20) 0g/s 99.48p/s 99.48c/s 99.48C/s jannah..VICTOR
+0g 0:00:01:06 67.15% (ETA: 07:56:19) 0g/s 99.62p/s 99.62c/s 99.62C/s Tinkerbell..bella123
+0g 0:00:01:09 70.08% (ETA: 07:56:19) 0g/s 99.83p/s 99.83c/s 99.83C/s bball23..mormon
+0g 0:00:01:10 71.51% (ETA: 07:56:18) 0g/s 99.92p/s 99.92c/s 99.92C/s megadeth..danutza
+0g 0:00:01:13 74.48% (ETA: 07:56:19) 0g/s 100.1p/s 100.1c/s 100.1C/s michael3..90210
+0g 0:00:01:14 75.92% (ETA: 07:56:18) 0g/s 100.2p/s 100.2c/s 100.2C/s 212223..tilly
+0g 0:00:01:16 77.38% (ETA: 07:56:19) 0g/s 100.2p/s 100.2c/s 100.2C/s suerte..P@ssw0rd
+0g 0:00:01:19 80.28% (ETA: 07:56:19) 0g/s 99.64p/s 99.64c/s 99.64C/s EMINEM..weston
+0g 0:00:01:21 81.70% (ETA: 07:56:20) 0g/s 99.33p/s 99.33c/s 99.33C/s teenager..nutter
+0g 0:00:01:22 83.17% (ETA: 07:56:19) 0g/s 99.21p/s 99.21c/s 99.21C/s network..allah1
+0g 0:00:01:24 84.62% (ETA: 07:56:20) 0g/s 99.26p/s 99.26c/s 99.26C/s PLAYBOY..474747
+0g 0:00:01:27 87.56% (ETA: 07:56:19) 0g/s 99.30p/s 99.30c/s 99.30C/s Robert..jigsaw
+0g 0:00:01:28 89.03% (ETA: 07:56:19) 0g/s 99.37p/s 99.37c/s 99.37C/s italy..passat
+0g 0:00:01:31 91.95% (ETA: 07:56:19) 0g/s 99.44p/s 99.44c/s 99.44C/s karaoke..rubberducky
+0g 0:00:01:32 93.41% (ETA: 07:56:19) 0g/s 99.48p/s 99.48c/s 99.48C/s robinhood..MYLOVE
+0g 0:00:01:35 96.41% (ETA: 07:56:19) 0g/s 99.60p/s 99.60c/s 99.60C/s 101086..manutd1
+0g 0:00:01:36 97.88% (ETA: 07:56:19) 0g/s 99.67p/s 99.67c/s 99.67C/s lordgod..rosalina
+0g 0:00:01:38 99.35% (ETA: 07:56:19) 0g/s 99.76p/s 99.76c/s 99.76C/s resident..lorna
+0g 0:00:01:40 DONE (2025-11-25 07:56) 0g/s 99.74p/s 99.74c/s 99.74C/s ladygaga..kupal
+Session 'bcrypt_rockyou_top_10000_wordlist_run2' completed

@@ -1,0 +1,2 @@
+decoy_hit_rate=1.0
+false_positive_rate=0.0

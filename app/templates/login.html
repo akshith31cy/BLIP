@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLIP — Secure Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0c12;
+            --surface: #111320;
+            --surface2: #181c2e;
+            --border: #252a42;
+            --accent: #4f6ef7;
+            --accent2: #7c3aed;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --mono: 'Space Mono', monospace;
+            --sans: 'DM Sans', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            font-family: var(--sans);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Left panel — visual */
+        .left-panel {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            overflow: hidden;
+        }
+
+        .grid-bg {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(79,110,247,0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(79,110,247,0.06) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.25;
+            animation: drift 8s ease-in-out infinite alternate;
+        }
+        .orb1 { width: 400px; height: 400px; background: var(--accent); top: -100px; left: -100px; }
+        .orb2 { width: 300px; height: 300px; background: var(--accent2); bottom: -80px; right: -80px; animation-delay: -4s; }
+
+        @keyframes drift {
+            from { transform: translate(0, 0); }
+            to { transform: translate(30px, 20px); }
+        }
+
+        .brand {
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-logo {
+            font-family: var(--mono);
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #4f6ef7, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .brand-sub {
+            font-size: 12px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-family: var(--mono);
+            margin-bottom: 48px;
+        }
+
+        .brand h2 {
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--text);
+            line-height: 1.5;
+            margin-bottom: 40px;
+            max-width: 380px;
+        }
+
+        .honey-visual {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 400px;
+        }
+
+        .hash-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--muted);
+            animation: slideIn 0.4s ease both;
+        }
+
+        .hash-row.real {
+            border-color: rgba(79,110,247,0.4);
+            color: var(--accent);
+            background: rgba(79,110,247,0.05);
+        }
+
+        .hash-label {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--border);
+            color: var(--muted);
+            flex-shrink: 0;
+        }
+
+        .hash-row.real .hash-label {
+            background: rgba(79,110,247,0.2);
+            color: var(--accent);
+        }
+
+        .hash-value {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Right panel — login form */
+        .right-panel {
+            width: 460px;
+            flex-shrink: 0;
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 48px;
+            position: relative;
+        }
+
+        .form-title {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .form-subtitle {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 40px;
+        }
+
+        /* Attempts meter */
+        .attempts-meter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+            padding: 14px 16px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .attempts-label {
+            font-size: 12px;
+            color: var(--muted);
+            font-family: var(--mono);
+            flex: 1;
+        }
+
+        .attempt-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .dot.used { background: var(--danger); border-color: var(--danger); box-shadow: 0 0 8px rgba(239,68,68,0.5); }
+        .dot.available { background: var(--success); border-color: var(--success); }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-family: var(--mono);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: var(--sans);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(79,110,247,0.15);
+        }
+
+        .form-group input.error {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: opacity 0.2s, transform 0.1s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .submit-btn:active { transform: translateY(0); }
+        .submit-btn:disabled {
+            background: var(--border);
+            color: var(--muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Alert messages */
+        .alert {
+            padding: 14px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: none;
+            line-height: 1.5;
+        }
+
+        .alert.show { display: block; }
+
+        .alert-error {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: #fca5a5;
+        }
+
+        .alert-success {
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.3);
+            color: #6ee7b7;
+        }
+
+        /* LOCKOUT screen */
+        .lockout-overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--surface);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 48px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s;
+        }
+
+        .lockout-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lock-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%,100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .lockout-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--danger);
+            margin-bottom: 12px;
+            font-family: var(--mono);
+        }
+
+        .lockout-msg {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 32px;
+            max-width: 300px;
+        }
+
+        .lockout-timer {
+            font-family: var(--mono);
+            font-size: 40px;
+            font-weight: 700;
+            color: var(--danger);
+            margin-bottom: 8px;
+        }
+
+        .lockout-timer-label {
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+        }
+
+        .honey-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: rgba(79,110,247,0.1);
+            border: 1px solid rgba(79,110,247,0.3);
+            border-radius: 8px;
+            font-size: 12px;
+            color: #a5b4fc;
+            font-family: var(--mono);
+        }
+
+        .links-row {
+            margin-top: 32px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .link-btn {
+            flex: 1;
+            padding: 11px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--muted);
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s;
+            display: block;
+        }
+
+        .link-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        .honey-info {
+            margin-top: 28px;
+            padding: 14px 16px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .honey-info strong { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+    <div class="grid-bg"></div>
+    <div class="glow-orb orb1"></div>
+    <div class="glow-orb orb2"></div>
+
+    <div class="brand">
+        <div class="brand-logo">🔐 BLIP</div>
+        <div class="brand-sub">Breach-Resilient Encrypted Auth Protocol</div>
+        <h2>Your password is stored as 1 real hash hidden among 9 decoys. Attackers can't tell which is real.</h2>
+
+        <div class="honey-visual" id="hashVisual">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+
+    <!-- Main login form -->
+    <div id="formContent">
+        <div class="form-title">Sign In</div>
+        <div class="form-subtitle">Enter your credentials to authenticate</div>
+
+        <div class="attempts-meter">
+            <span class="attempts-label">Attempts remaining</span>
+            <div class="attempt-dots" id="dots">
+                <div class="dot available"></div>
+                <div class="dot available"></div>
+                <div class="dot available"></div>
+            </div>
+        </div>
+
+        <div class="alert alert-error" id="errorAlert"></div>
+        <div class="alert alert-success" id="successAlert"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <div class="input-wrap">
+                    <input type="text" id="username" name="username" placeholder="Enter your username" autocomplete="off" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrap">
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="loginBtn">Authenticate →</button>
+        </form>
+
+        <div class="honey-info">
+            <strong>🍯 Honey Encryption Active:</strong> Even if this database is breached, attackers see 10 plausible hashes per user — only 1 is real. Wrong guesses trigger real-time alerts.
+        </div>
+
+        <div class="links-row">
+            <a href="/dashboard" class="link-btn">📊 Dashboard</a>
+            <a href="/" class="link-btn">➕ Register</a>
+        </div>
+    </div>
+
+    <!-- LOCKOUT OVERLAY -->
+    <div class="lockout-overlay" id="lockoutOverlay">
+        <div class="lock-icon">🔒</div>
+        <div class="lockout-title">ACCOUNT LOCKED</div>
+        <div class="lockout-msg">
+            3 consecutive failed attempts detected.<br>
+            Honey encryption has flagged this session.<br><br>
+            This event has been logged for security review.
+        </div>
+        <div class="lockout-timer" id="timerDisplay">30</div>
+        <div class="lockout-timer-label">seconds until unlock</div>
+        <div class="honey-badge">🍯 Breach alert triggered — decoy accessed</div>
+    </div>
+
+</div>
+
+<script>
+    const MAX_ATTEMPTS = 3;
+    const LOCKOUT_SECS = 30;
+    let attemptsLeft = MAX_ATTEMPTS;
+    let locked = false;
+    let timerInterval = null;
+
+    // Simulated honey hashes to display on left panel
+    const fakeHashes = [
+        { label: 'DECOY 0', val: '$argon2id$v=19$m=65536$f3hK1x...QpZmNb', real: false },
+        { label: 'DECOY 1', val: '$argon2id$v=19$m=65536$aB2yR9...WxLqTd', real: false },
+        { label: 'DECOY 2', val: '$argon2id$v=19$m=65536$cD4zM7...KmVpSe', real: false },
+        { label: 'DECOY 3', val: '$argon2id$v=19$m=65536$eF6wN5...JnUoRf', real: false },
+        { label: 'DECOY 4', val: '$argon2id$v=19$m=65536$gH8vO3...InToQg', real: false },
+        { label: 'DECOY 5', val: '$argon2id$v=19$m=65536$iJ0uP1...HmSnPh', real: false },
+        { label: 'DECOY 6', val: '$argon2id$v=19$m=65536$kL2tQ8...GlRmOi', real: false },
+        { label: '✦ REAL  ', val: '$argon2id$v=19$m=65536$mN4sR6...FlQlNj', real: true  },
+        { label: 'DECOY 7', val: '$argon2id$v=19$m=65536$oP6rS4...EkPkMk', real: false },
+        { label: 'DECOY 8', val: '$argon2id$v=19$m=65536$qR8qT2...DjOjLl', real: false },
+    ];
+
+    function buildHashVisual() {
+        const container = document.getElementById('hashVisual');
+        fakeHashes.forEach((h, i) => {
+            const row = document.createElement('div');
+            row.className = 'hash-row' + (h.real ? ' real' : '');
+            row.style.animationDelay = `${i * 0.06}s`;
+            row.innerHTML = `<span class="hash-label">${h.label}</span><span class="hash-value">${h.val}</span>`;
+            container.appendChild(row);
+        });
+    }
+
+    function updateDots() {
+        const dots = document.querySelectorAll('.dot');
+        dots.forEach((dot, i) => {
+            dot.classList.remove('used', 'available');
+            if (i < (MAX_ATTEMPTS - attemptsLeft)) {
+                dot.classList.add('used');
+            } else {
+                dot.classList.add('available');
+            }
+        });
+    }
+
+    function showError(msg) {
+        const el = document.getElementById('errorAlert');
+        el.textContent = msg;
+        el.classList.add('show');
+        document.getElementById('successAlert').classList.remove('show');
+        document.getElementById('password').classList.add('error');
+        setTimeout(() => document.getElementById('password').classList.remove('error'), 600);
+    }
+
+    function showSuccess(msg) {
+        const el = document.getElementById('successAlert');
+        el.textContent = msg;
+        el.classList.add('show');
+        document.getElementById('errorAlert').classList.remove('show');
+    }
+
+    function triggerLockout() {
+        locked = true;
+        document.getElementById('lockoutOverlay').classList.add('active');
+
+        let remaining = LOCKOUT_SECS;
+        const display = document.getElementById('timerDisplay');
+        display.textContent = remaining;
+
+        timerInterval = setInterval(() => {
+            remaining--;
+            display.textContent = remaining;
+            if (remaining <= 0) {
+                clearInterval(timerInterval);
+                unlock();
+            }
+        }, 1000);
+    }
+
+    function unlock() {
+        locked = false;
+        attemptsLeft = MAX_ATTEMPTS;
+        updateDots();
+        document.getElementById('lockoutOverlay').classList.remove('active');
+        document.getElementById('errorAlert').classList.remove('show');
+        document.getElementById('loginBtn').disabled = false;
+        document.getElementById('loginBtn').textContent = 'Authenticate →';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        if (locked) return;
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+
+        if (!username || !password) {
+            showError('Please enter both username and password.');
+            return;
+        }
+
+        const btn = document.getElementById('loginBtn');
+        btn.disabled = true;
+        btn.textContent = 'Verifying…';
+
+        try {
+            const resp = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ username, password })
+            });
+
+            const data = await resp.json();
+
+            if (data.success) {
+                showSuccess(`✓ Authentication successful! Welcome back, ${username}.`);
+                btn.textContent = 'Authenticated ✓';
+                btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                return; // Don't re-enable, stay authenticated
+            } else {
+                attemptsLeft--;
+                updateDots();
+
+                if (attemptsLeft <= 0) {
+                    triggerLockout();
+                } else {
+                    showError(
+                        data.message || `❌ Invalid credentials. ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} remaining before lockout.`
+                    );
+                    btn.disabled = false;
+                    btn.textContent = 'Authenticate →';
+                }
+            }
+        } catch (err) {
+            // If backend not available, simulate the demo locally
+            attemptsLeft--;
+            updateDots();
+
+            if (attemptsLeft <= 0) {
+                triggerLockout();
+            } else {
+                showError(`❌ Wrong password. ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} remaining before lockout.`);
+                btn.disabled = false;
+                btn.textContent = 'Authenticate →';
+            }
+        }
+    });
+
+    buildHashVisual();
+    updateDots();
+</script>
+</body>
+</html>

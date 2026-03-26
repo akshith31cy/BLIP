@@ -1,0 +1,4 @@
+Benchmarking: bcrypt ("$2a$05", 32 iterations) [Blowfish 32/64 X3]... (16xOMP) DONE
+Speed for cost 1 (iteration count) of 32
+Raw:	3822 c/s real, 454 c/s virtual
+
