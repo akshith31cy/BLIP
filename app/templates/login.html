@@ -3,664 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLIP — Secure Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>LEAP — Secure Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <style>
         :root {
-            --bg: #0a0c12;
-            --surface: #111320;
-            --surface2: #181c2e;
-            --border: #252a42;
-            --accent: #4f6ef7;
-            --accent2: #7c3aed;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --success: #10b981;
-            --text: #e2e8f0;
-            --muted: #64748b;
-            --mono: 'Space Mono', monospace;
-            --sans: 'DM Sans', sans-serif;
+            --bg: #07090f; --surface: #0d1018; --card: #111520;
+            --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+            --accent: #00e5ff; --accent2: #7c3aed;
+            --green: #00e676; --red: #ff1744; --orange: #ff9100; --yellow: #ffea00;
+            --text: #e8eaf0; --muted: #4a5568; --muted2: #718096;
+            --mono: 'IBM Plex Mono', monospace; --display: 'Syne', sans-serif;
         }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        body { background:var(--bg); font-family:var(--display); color:var(--text); min-height:100vh; display:flex; overflow:hidden; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Left panel */
+        .left { flex:1; position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:center; padding:64px 56px; }
+        .grid-lines { position:absolute; inset:0; pointer-events:none;
+            background-image: linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+            background-size: 48px 48px; }
+        .orb { position:absolute; border-radius:50%; filter:blur(100px); pointer-events:none; }
+        .orb1 { width:500px; height:500px; background:rgba(0,229,255,0.10); top:-150px; left:-150px; animation:drift 10s ease-in-out infinite alternate; }
+        .orb2 { width:350px; height:350px; background:rgba(124,58,237,0.09); bottom:-100px; right:-50px; animation:drift 8s ease-in-out infinite alternate-reverse; }
+        @keyframes drift { from{transform:translate(0,0);} to{transform:translate(40px,30px);} }
 
-        body {
-            background: var(--bg);
-            font-family: var(--sans);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            overflow: hidden;
-        }
+        .brand { position:relative; z-index:1; }
+        .wordmark { font-family:var(--mono); font-size:52px; font-weight:600; letter-spacing:-3px; color:var(--accent); line-height:1; margin-bottom:6px; }
+        .wordmark-full { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--muted2); font-family:var(--mono); margin-bottom:40px; }
+        .headline { font-size:24px; font-weight:700; line-height:1.4; max-width:400px; margin-bottom:36px; letter-spacing:-0.5px; }
+        .headline span { color:var(--accent); }
 
-        /* Left panel — visual */
-        .left-panel {
-            flex: 1;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 60px;
-            overflow: hidden;
-        }
-
-        .grid-bg {
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(79,110,247,0.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(79,110,247,0.06) 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
-
-        .glow-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.25;
-            animation: drift 8s ease-in-out infinite alternate;
-        }
-        .orb1 { width: 400px; height: 400px; background: var(--accent); top: -100px; left: -100px; }
-        .orb2 { width: 300px; height: 300px; background: var(--accent2); bottom: -80px; right: -80px; animation-delay: -4s; }
-
-        @keyframes drift {
-            from { transform: translate(0, 0); }
-            to { transform: translate(30px, 20px); }
-        }
-
-        .brand {
-            position: relative;
-            z-index: 1;
-        }
-
-        .brand-logo {
-            font-family: var(--mono);
-            font-size: 48px;
-            font-weight: 700;
-            letter-spacing: -2px;
-            background: linear-gradient(135deg, #4f6ef7, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
-        }
-
-        .brand-sub {
-            font-size: 12px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--muted);
-            font-family: var(--mono);
-            margin-bottom: 48px;
-        }
-
-        .brand h2 {
-            font-size: 22px;
-            font-weight: 500;
-            color: var(--text);
-            line-height: 1.5;
-            margin-bottom: 40px;
-            max-width: 380px;
-        }
-
-        .honey-visual {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-width: 400px;
-        }
-
+        .hash-pool { display:flex; flex-direction:column; gap:6px; max-width:380px; }
         .hash-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-family: var(--mono);
-            font-size: 11px;
-            color: var(--muted);
+            display:flex; align-items:center; gap:10px; padding:8px 12px;
+            background:rgba(255,255,255,0.03); border:1px solid var(--border);
+            border-radius:7px; font-family:var(--mono); font-size:10px; color:var(--muted2);
             animation: slideIn 0.4s ease both;
         }
+        .hash-row.real { border-color:rgba(0,229,255,0.3); color:var(--accent); background:rgba(0,229,255,0.04); }
+        @keyframes slideIn { from{opacity:0;transform:translateX(-8px);} to{opacity:1;transform:translateX(0);} }
+        .hash-tag { font-size:9px; padding:2px 6px; border-radius:3px; background:rgba(255,255,255,0.06); color:var(--muted); flex-shrink:0; }
+        .hash-row.real .hash-tag { background:rgba(0,229,255,0.12); color:var(--accent); }
+        .hash-val { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
 
-        .hash-row.real {
-            border-color: rgba(79,110,247,0.4);
-            color: var(--accent);
-            background: rgba(79,110,247,0.05);
-        }
+        /* Right panel */
+        .right { width:440px; flex-shrink:0; background:var(--surface); border-left:1px solid var(--border); display:flex; flex-direction:column; justify-content:center; padding:56px 44px; position:relative; }
 
-        .hash-label {
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: var(--border);
-            color: var(--muted);
-            flex-shrink: 0;
-        }
-
-        .hash-row.real .hash-label {
-            background: rgba(79,110,247,0.2);
-            color: var(--accent);
-        }
-
-        .hash-value {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            flex: 1;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        /* Right panel — login form */
-        .right-panel {
-            width: 460px;
-            flex-shrink: 0;
-            background: var(--surface);
-            border-left: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 60px 48px;
-            position: relative;
-        }
-
-        .form-title {
-            font-size: 26px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        .form-subtitle {
-            font-size: 13px;
-            color: var(--muted);
-            margin-bottom: 40px;
-        }
+        .form-title { font-size:24px; font-weight:700; margin-bottom:4px; }
+        .form-sub { font-size:12px; color:var(--muted2); font-family:var(--mono); margin-bottom:32px; }
 
         /* Attempts meter */
-        .attempts-meter {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 28px;
-            padding: 14px 16px;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-        }
+        .meter { display:flex; align-items:center; gap:10px; padding:12px 14px; background:var(--card); border:1px solid var(--border); border-radius:9px; margin-bottom:24px; }
+        .meter-label { font-size:11px; font-family:var(--mono); color:var(--muted2); flex:1; }
+        .dots { display:flex; gap:6px; }
+        .dot { width:10px; height:10px; border-radius:50%; border:1.5px solid var(--border); transition:all 0.3s; }
+        .dot.ok  { background:var(--green); border-color:var(--green); box-shadow:0 0 6px rgba(0,230,118,0.4); }
+        .dot.bad { background:var(--red);   border-color:var(--red);   box-shadow:0 0 6px rgba(255,23,68,0.4); }
 
-        .attempts-label {
-            font-size: 12px;
-            color: var(--muted);
-            font-family: var(--mono);
-            flex: 1;
-        }
+        .alert { padding:12px 14px; border-radius:8px; font-size:12px; margin-bottom:18px; display:none; line-height:1.5; font-family:var(--mono); }
+        .alert.show { display:block; }
+        .alert-err { background:rgba(255,23,68,0.08); border:1px solid rgba(255,23,68,0.25); color:#ff8a80; }
+        .alert-ok  { background:rgba(0,230,118,0.08); border:1px solid rgba(0,230,118,0.2); color:#69f0ae; }
 
-        .attempt-dots {
-            display: flex;
-            gap: 6px;
-        }
+        .field { margin-bottom:18px; }
+        .field label { display:block; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); font-family:var(--mono); margin-bottom:7px; }
+        .field input { width:100%; padding:13px 15px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:14px; font-family:var(--display); transition:border-color 0.2s, box-shadow 0.2s; }
+        .field input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(0,229,255,0.07); }
+        .field input.err { border-color:var(--red); box-shadow:0 0 0 3px rgba(255,23,68,0.07); animation:shake 0.4s ease; }
+        @keyframes shake { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-5px);} 40%{transform:translateX(5px);} 60%{transform:translateX(-3px);} 80%{transform:translateX(3px);} }
 
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
-            transition: all 0.3s;
-        }
+        .submit-btn { width:100%; padding:14px; background:var(--accent); border:none; border-radius:9px; color:var(--bg); font-size:14px; font-weight:700; font-family:var(--display); cursor:pointer; transition:opacity 0.2s, transform 0.1s; letter-spacing:0.5px; }
+        .submit-btn:hover { opacity:0.88; transform:translateY(-1px); }
+        .submit-btn:disabled { background:var(--card); color:var(--muted); cursor:not-allowed; transform:none; }
 
-        .dot.used { background: var(--danger); border-color: var(--danger); box-shadow: 0 0 8px rgba(239,68,68,0.5); }
-        .dot.available { background: var(--success); border-color: var(--success); }
+        .links { display:flex; gap:10px; margin-top:20px; }
+        .link-btn { flex:1; padding:10px; text-align:center; font-size:11px; border:1px solid var(--border); border-radius:8px; color:var(--muted2); text-decoration:none; font-family:var(--mono); transition:all 0.15s; }
+        .link-btn:hover { border-color:var(--accent); color:var(--accent); }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+        .honey-note { margin-top:18px; padding:12px 14px; background:rgba(0,229,255,0.04); border:1px solid rgba(0,229,255,0.1); border-radius:8px; font-size:11px; font-family:var(--mono); color:var(--muted2); line-height:1.6; }
+        .honey-note strong { color:var(--accent); }
 
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            font-family: var(--mono);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin-bottom: 8px;
-        }
-
-        .input-wrap {
-            position: relative;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 14px 16px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text);
-            font-size: 14px;
-            font-family: var(--sans);
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(79,110,247,0.15);
-        }
-
-        .form-group input.error {
-            border-color: var(--danger);
-            box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
-            animation: shake 0.4s ease;
-        }
-
-        @keyframes shake {
-            0%,100% { transform: translateX(0); }
-            20% { transform: translateX(-6px); }
-            40% { transform: translateX(6px); }
-            60% { transform: translateX(-4px); }
-            80% { transform: translateX(4px); }
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 8px;
-            transition: opacity 0.2s, transform 0.1s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-        .submit-btn:active { transform: translateY(0); }
-        .submit-btn:disabled {
-            background: var(--border);
-            color: var(--muted);
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Alert messages */
-        .alert {
-            padding: 14px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            margin-bottom: 20px;
-            display: none;
-            line-height: 1.5;
-        }
-
-        .alert.show { display: block; }
-
-        .alert-error {
-            background: rgba(239,68,68,0.1);
-            border: 1px solid rgba(239,68,68,0.3);
-            color: #fca5a5;
-        }
-
-        .alert-success {
-            background: rgba(16,185,129,0.1);
-            border: 1px solid rgba(16,185,129,0.3);
-            color: #6ee7b7;
-        }
-
-        /* LOCKOUT screen */
-        .lockout-overlay {
-            position: absolute;
-            inset: 0;
-            background: var(--surface);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 48px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s;
-        }
-
-        .lockout-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .lock-icon {
-            font-size: 64px;
-            margin-bottom: 24px;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%,100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .lockout-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--danger);
-            margin-bottom: 12px;
-            font-family: var(--mono);
-        }
-
-        .lockout-msg {
-            font-size: 14px;
-            color: var(--muted);
-            line-height: 1.7;
-            margin-bottom: 32px;
-            max-width: 300px;
-        }
-
-        .lockout-timer {
-            font-family: var(--mono);
-            font-size: 40px;
-            font-weight: 700;
-            color: var(--danger);
-            margin-bottom: 8px;
-        }
-
-        .lockout-timer-label {
-            font-size: 12px;
-            color: var(--muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 32px;
-        }
-
-        .honey-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 18px;
-            background: rgba(79,110,247,0.1);
-            border: 1px solid rgba(79,110,247,0.3);
-            border-radius: 8px;
-            font-size: 12px;
-            color: #a5b4fc;
-            font-family: var(--mono);
-        }
-
-        .links-row {
-            margin-top: 32px;
-            display: flex;
-            gap: 12px;
-        }
-
-        .link-btn {
-            flex: 1;
-            padding: 11px;
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--muted);
-            font-size: 13px;
-            cursor: pointer;
-            text-decoration: none;
-            text-align: center;
-            transition: all 0.2s;
-            display: block;
-        }
-
-        .link-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-        .honey-info {
-            margin-top: 28px;
-            padding: 14px 16px;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 12px;
-            color: var(--muted);
-            line-height: 1.6;
-        }
-
-        .honey-info strong { color: var(--accent); }
+        /* Lockout overlay */
+        .lockout { position:absolute; inset:0; background:var(--surface); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px; opacity:0; pointer-events:none; transition:opacity 0.4s; }
+        .lockout.on { opacity:1; pointer-events:all; }
+        .lock-icon { font-size:52px; margin-bottom:18px; animation:pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
+        .lockout-title { font-size:20px; font-weight:700; color:var(--red); margin-bottom:10px; font-family:var(--mono); }
+        .lockout-msg { font-size:12px; color:var(--muted2); line-height:1.7; margin-bottom:24px; max-width:280px; font-family:var(--mono); }
+        .lockout-timer { font-family:var(--mono); font-size:44px; font-weight:600; color:var(--red); margin-bottom:6px; }
+        .lockout-timer-label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); font-family:var(--mono); margin-bottom:24px; }
+        .honey-badge { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; background:rgba(0,229,255,0.06); border:1px solid rgba(0,229,255,0.2); border-radius:7px; font-size:11px; color:var(--accent); font-family:var(--mono); }
     </style>
 </head>
 <body>
 
-<!-- LEFT PANEL -->
-<div class="left-panel">
-    <div class="grid-bg"></div>
-    <div class="glow-orb orb1"></div>
-    <div class="glow-orb orb2"></div>
+<!-- LEFT -->
+<div class="left">
+  <div class="grid-lines"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
 
-    <div class="brand">
-        <div class="brand-logo">🔐 BLIP</div>
-        <div class="brand-sub">Breach-Resilient Encrypted Auth Protocol</div>
-        <h2>Your password is stored as 1 real hash hidden among 9 decoys. Attackers can't tell which is real.</h2>
+  <div class="brand">
+    <div class="wordmark">LEAP</div>
+    <div class="wordmark-full">Leakage-Resilient Encrypted Authentication Protocol</div>
+    <h2 class="headline">Even a stolen database reveals <span>nothing certain.</span></h2>
 
-        <div class="honey-visual" id="hashVisual">
-            <!-- Populated by JS -->
-        </div>
-    </div>
+    <div class="hash-pool" id="hashPool"></div>
+  </div>
 </div>
 
-<!-- RIGHT PANEL -->
-<div class="right-panel">
+<!-- RIGHT -->
+<div class="right">
+  <div id="formContent">
+    <div class="form-title">Authenticate</div>
+    <div class="form-sub">Enter your credentials to verify identity</div>
 
-    <!-- Main login form -->
-    <div id="formContent">
-        <div class="form-title">Sign In</div>
-        <div class="form-subtitle">Enter your credentials to authenticate</div>
-
-        <div class="attempts-meter">
-            <span class="attempts-label">Attempts remaining</span>
-            <div class="attempt-dots" id="dots">
-                <div class="dot available"></div>
-                <div class="dot available"></div>
-                <div class="dot available"></div>
-            </div>
-        </div>
-
-        <div class="alert alert-error" id="errorAlert"></div>
-        <div class="alert alert-success" id="successAlert"></div>
-
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <div class="input-wrap">
-                    <input type="text" id="username" name="username" placeholder="Enter your username" autocomplete="off" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <div class="input-wrap">
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                </div>
-            </div>
-
-            <button type="submit" class="submit-btn" id="loginBtn">Authenticate →</button>
-        </form>
-
-        <div class="honey-info">
-            <strong>🍯 Honey Encryption Active:</strong> Even if this database is breached, attackers see 10 plausible hashes per user — only 1 is real. Wrong guesses trigger real-time alerts.
-        </div>
-
-        <div class="links-row">
-            <a href="/dashboard" class="link-btn">📊 Dashboard</a>
-            <a href="/" class="link-btn">➕ Register</a>
-        </div>
+    <div class="meter">
+      <span class="meter-label">Attempts remaining</span>
+      <div class="dots" id="dots">
+        <div class="dot ok"></div>
+        <div class="dot ok"></div>
+        <div class="dot ok"></div>
+      </div>
     </div>
 
-    <!-- LOCKOUT OVERLAY -->
-    <div class="lockout-overlay" id="lockoutOverlay">
-        <div class="lock-icon">🔒</div>
-        <div class="lockout-title">ACCOUNT LOCKED</div>
-        <div class="lockout-msg">
-            3 consecutive failed attempts detected.<br>
-            Honey encryption has flagged this session.<br><br>
-            This event has been logged for security review.
-        </div>
-        <div class="lockout-timer" id="timerDisplay">30</div>
-        <div class="lockout-timer-label">seconds until unlock</div>
-        <div class="honey-badge">🍯 Breach alert triggered — decoy accessed</div>
+    <div class="alert alert-err" id="errAlert"></div>
+    <div class="alert alert-ok"  id="okAlert"></div>
+
+    <form id="loginForm">
+      <div class="field">
+        <label>Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter username" autocomplete="off" required/>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter password" required/>
+      </div>
+      <button type="submit" class="submit-btn" id="loginBtn">Authenticate →</button>
+    </form>
+
+    <div class="honey-note">
+      <strong>Honey Active:</strong> Wrong guesses may match a decoy hash — triggering an instant breach flag and logging the event.
     </div>
 
+    <div class="links">
+      <a href="/"          class="link-btn">Register</a>
+      <a href="/dashboard" class="link-btn">Dashboard</a>
+    </div>
+  </div>
+
+  <!-- Lockout -->
+  <div class="lockout" id="lockout">
+    <div class="lock-icon">🔒</div>
+    <div class="lockout-title">ACCOUNT LOCKED</div>
+    <div class="lockout-msg">3 failed attempts.<br>Honey encryption flagged this session.<br>Event logged for review.</div>
+    <div class="lockout-timer" id="timerDisplay">30</div>
+    <div class="lockout-timer-label">seconds until unlock</div>
+    <div class="honey-badge">🍯 Breach event recorded</div>
+  </div>
 </div>
 
 <script>
-    const MAX_ATTEMPTS = 3;
-    const LOCKOUT_SECS = 30;
-    let attemptsLeft = MAX_ATTEMPTS;
-    let locked = false;
-    let timerInterval = null;
+  const MAX = 3, LOCKOUT = 30;
+  let attemptsLeft = MAX, locked = false, timerInt = null;
 
-    // Simulated honey hashes to display on left panel
-    const fakeHashes = [
-        { label: 'DECOY 0', val: '$argon2id$v=19$m=65536$f3hK1x...QpZmNb', real: false },
-        { label: 'DECOY 1', val: '$argon2id$v=19$m=65536$aB2yR9...WxLqTd', real: false },
-        { label: 'DECOY 2', val: '$argon2id$v=19$m=65536$cD4zM7...KmVpSe', real: false },
-        { label: 'DECOY 3', val: '$argon2id$v=19$m=65536$eF6wN5...JnUoRf', real: false },
-        { label: 'DECOY 4', val: '$argon2id$v=19$m=65536$gH8vO3...InToQg', real: false },
-        { label: 'DECOY 5', val: '$argon2id$v=19$m=65536$iJ0uP1...HmSnPh', real: false },
-        { label: 'DECOY 6', val: '$argon2id$v=19$m=65536$kL2tQ8...GlRmOi', real: false },
-        { label: '✦ REAL  ', val: '$argon2id$v=19$m=65536$mN4sR6...FlQlNj', real: true  },
-        { label: 'DECOY 7', val: '$argon2id$v=19$m=65536$oP6rS4...EkPkMk', real: false },
-        { label: 'DECOY 8', val: '$argon2id$v=19$m=65536$qR8qT2...DjOjLl', real: false },
-    ];
+  const hashes = [
+    { tag:'DECOY 0', val:'$argon2id$v=19$m=65536$f3hK1x…QpZmNb', real:false },
+    { tag:'DECOY 1', val:'$argon2id$v=19$m=65536$aB2yR9…WxLqTd', real:false },
+    { tag:'DECOY 2', val:'$argon2id$v=19$m=65536$cD4zM7…KmVpSe', real:false },
+    { tag:'DECOY 3', val:'$argon2id$v=19$m=65536$eF6wN5…JnUoRf', real:false },
+    { tag:'DECOY 4', val:'$argon2id$v=19$m=65536$gH8vO3…InToQg', real:false },
+    { tag:'✦ REAL ', val:'$argon2id$v=19$m=65536$mN4sR6…FlQlNj', real:true  },
+    { tag:'DECOY 5', val:'$argon2id$v=19$m=65536$iJ0uP1…HmSnPh', real:false },
+    { tag:'DECOY 6', val:'$argon2id$v=19$m=65536$kL2tQ8…GlRmOi', real:false },
+    { tag:'DECOY 7', val:'$argon2id$v=19$m=65536$oP6rS4…EkPkMk', real:false },
+    { tag:'DECOY 8', val:'$argon2id$v=19$m=65536$qR8qT2…DjOjLl', real:false },
+  ];
 
-    function buildHashVisual() {
-        const container = document.getElementById('hashVisual');
-        fakeHashes.forEach((h, i) => {
-            const row = document.createElement('div');
-            row.className = 'hash-row' + (h.real ? ' real' : '');
-            row.style.animationDelay = `${i * 0.06}s`;
-            row.innerHTML = `<span class="hash-label">${h.label}</span><span class="hash-value">${h.val}</span>`;
-            container.appendChild(row);
-        });
-    }
-
-    function updateDots() {
-        const dots = document.querySelectorAll('.dot');
-        dots.forEach((dot, i) => {
-            dot.classList.remove('used', 'available');
-            if (i < (MAX_ATTEMPTS - attemptsLeft)) {
-                dot.classList.add('used');
-            } else {
-                dot.classList.add('available');
-            }
-        });
-    }
-
-    function showError(msg) {
-        const el = document.getElementById('errorAlert');
-        el.textContent = msg;
-        el.classList.add('show');
-        document.getElementById('successAlert').classList.remove('show');
-        document.getElementById('password').classList.add('error');
-        setTimeout(() => document.getElementById('password').classList.remove('error'), 600);
-    }
-
-    function showSuccess(msg) {
-        const el = document.getElementById('successAlert');
-        el.textContent = msg;
-        el.classList.add('show');
-        document.getElementById('errorAlert').classList.remove('show');
-    }
-
-    function triggerLockout() {
-        locked = true;
-        document.getElementById('lockoutOverlay').classList.add('active');
-
-        let remaining = LOCKOUT_SECS;
-        const display = document.getElementById('timerDisplay');
-        display.textContent = remaining;
-
-        timerInterval = setInterval(() => {
-            remaining--;
-            display.textContent = remaining;
-            if (remaining <= 0) {
-                clearInterval(timerInterval);
-                unlock();
-            }
-        }, 1000);
-    }
-
-    function unlock() {
-        locked = false;
-        attemptsLeft = MAX_ATTEMPTS;
-        updateDots();
-        document.getElementById('lockoutOverlay').classList.remove('active');
-        document.getElementById('errorAlert').classList.remove('show');
-        document.getElementById('loginBtn').disabled = false;
-        document.getElementById('loginBtn').textContent = 'Authenticate →';
-    }
-
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        if (locked) return;
-
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value.trim();
-
-        if (!username || !password) {
-            showError('Please enter both username and password.');
-            return;
-        }
-
-        const btn = document.getElementById('loginBtn');
-        btn.disabled = true;
-        btn.textContent = 'Verifying…';
-
-        try {
-            const resp = await fetch('/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ username, password })
-            });
-
-            const data = await resp.json();
-
-            if (data.success) {
-                showSuccess(`✓ Authentication successful! Welcome back, ${username}.`);
-                btn.textContent = 'Authenticated ✓';
-                btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-                return; // Don't re-enable, stay authenticated
-            } else {
-                attemptsLeft--;
-                updateDots();
-
-                if (attemptsLeft <= 0) {
-                    triggerLockout();
-                } else {
-                    showError(
-                        data.message || `❌ Invalid credentials. ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} remaining before lockout.`
-                    );
-                    btn.disabled = false;
-                    btn.textContent = 'Authenticate →';
-                }
-            }
-        } catch (err) {
-            // If backend not available, simulate the demo locally
-            attemptsLeft--;
-            updateDots();
-
-            if (attemptsLeft <= 0) {
-                triggerLockout();
-            } else {
-                showError(`❌ Wrong password. ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} remaining before lockout.`);
-                btn.disabled = false;
-                btn.textContent = 'Authenticate →';
-            }
-        }
+  function buildPool() {
+    const c = document.getElementById('hashPool');
+    hashes.forEach((h,i) => {
+      const r = document.createElement('div');
+      r.className = 'hash-row' + (h.real ? ' real' : '');
+      r.style.animationDelay = i * 0.05 + 's';
+      r.innerHTML = `<span class="hash-tag">${h.tag}</span><span class="hash-val">${h.val}</span>`;
+      c.appendChild(r);
     });
+  }
 
-    buildHashVisual();
-    updateDots();
+  function updateDots() {
+    document.querySelectorAll('.dot').forEach((d,i) => {
+      d.className = 'dot ' + (i < MAX - attemptsLeft ? 'bad' : 'ok');
+    });
+  }
+
+  function showErr(msg) {
+    const e = document.getElementById('errAlert');
+    e.textContent = msg; e.classList.add('show');
+    document.getElementById('okAlert').classList.remove('show');
+    const pw = document.getElementById('password');
+    pw.classList.add('err');
+    setTimeout(() => pw.classList.remove('err'), 600);
+  }
+
+  function showOk(msg) {
+    const e = document.getElementById('okAlert');
+    e.textContent = msg; e.classList.add('show');
+    document.getElementById('errAlert').classList.remove('show');
+  }
+
+  function triggerLockout() {
+    locked = true;
+    document.getElementById('lockout').classList.add('on');
+    let r = LOCKOUT;
+    document.getElementById('timerDisplay').textContent = r;
+    timerInt = setInterval(() => {
+      r--;
+      document.getElementById('timerDisplay').textContent = r;
+      if (r <= 0) { clearInterval(timerInt); unlock(); }
+    }, 1000);
+  }
+
+  function unlock() {
+    locked = false; attemptsLeft = MAX; updateDots();
+    document.getElementById('lockout').classList.remove('on');
+    document.getElementById('errAlert').classList.remove('show');
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = false; btn.textContent = 'Authenticate →';
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    if (locked) return;
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    if (!username || !password) { showErr('Both fields are required.'); return; }
+
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = true; btn.textContent = 'Verifying…';
+
+    try {
+      const resp = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ username, password })
+      });
+      const data = await resp.json();
+
+      if (data.success) {
+        showOk(`✓ Authenticated — welcome, ${username}!`);
+        btn.textContent = '✓ Authenticated';
+        btn.style.background = 'var(--green)';
+        setTimeout(() => window.location.href = '/dashboard', 1200);
+        return;
+      }
+
+      attemptsLeft--;
+      updateDots();
+      if (attemptsLeft <= 0) {
+        triggerLockout();
+      } else {
+        showErr(data.message || `Invalid credentials. ${attemptsLeft} attempt${attemptsLeft===1?'':'s'} left.`);
+        btn.disabled = false; btn.textContent = 'Authenticate →';
+      }
+    } catch {
+      attemptsLeft--;
+      updateDots();
+      if (attemptsLeft <= 0) { triggerLockout(); }
+      else {
+        showErr(`Network error or wrong password. ${attemptsLeft} attempt${attemptsLeft===1?'':'s'} left.`);
+        btn.disabled = false; btn.textContent = 'Authenticate →';
+      }
+    }
+  });
+
+  buildPool();
+  updateDots();
 </script>
 </body>
 </html>

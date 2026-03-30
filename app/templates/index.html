@@ -1,252 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Breach Resilient Password Storage</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LEAP — Register</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #07090f; --surface: #0d1018; --card: #111520;
+      --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+      --accent: #00e5ff; --accent2: #7c3aed;
+      --green: #00e676; --red: #ff1744; --orange: #ff9100;
+      --text: #e8eaf0; --muted: #4a5568; --muted2: #718096;
+      --mono: 'IBM Plex Mono', monospace; --display: 'Syne', sans-serif;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: var(--bg); font-family: var(--display); color: var(--text);
+      min-height: 100vh; display: flex; overflow: hidden;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+    /* Left panel */
+    .left { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; padding: 64px 56px; }
 
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            max-width: 1000px;
-            width: 100%;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-        }
+    .grid-lines {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
 
-        .info-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 60px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+    .orb { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; }
+    .orb1 { width: 500px; height: 500px; background: rgba(0,229,255,0.12); top: -150px; left: -150px; animation: drift 10s ease-in-out infinite alternate; }
+    .orb2 { width: 350px; height: 350px; background: rgba(124,58,237,0.1); bottom: -100px; right: -50px; animation: drift 8s ease-in-out infinite alternate-reverse; }
+    @keyframes drift { from { transform: translate(0,0); } to { transform: translate(40px,30px); } }
 
-        .info-section h1 {
-            font-size: 42px;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
+    .brand { position: relative; z-index: 1; }
 
-        .info-section p {
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 30px;
-            opacity: 0.95;
-        }
+    .wordmark {
+      font-family: var(--mono); font-size: 56px; font-weight: 600;
+      letter-spacing: -3px; color: var(--accent); line-height: 1;
+      margin-bottom: 8px;
+    }
 
-        .features {
-            list-style: none;
-        }
+    .wordmark-full {
+      font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--muted2); font-family: var(--mono); margin-bottom: 40px;
+    }
 
-        .features li {
-            padding: 12px 0;
-            display: flex;
-            align-items: center;
-            font-size: 15px;
-        }
+    .headline {
+      font-size: 28px; font-weight: 700; line-height: 1.35;
+      max-width: 420px; margin-bottom: 40px; letter-spacing: -0.5px;
+    }
 
-        .features li::before {
-            content: "✓";
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            text-align: center;
-            line-height: 24px;
-            margin-right: 12px;
-            font-weight: bold;
-        }
+    .headline span { color: var(--accent); }
 
-        .form-section {
-            padding: 60px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+    .feature-list { display: flex; flex-direction: column; gap: 14px; max-width: 380px; }
 
-        .form-section h2 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 10px;
-        }
+    .feature {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      animation: fadeUp 0.5s ease both;
+    }
 
-        .form-section .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
+    .feature:nth-child(1) { animation-delay: 0.1s; }
+    .feature:nth-child(2) { animation-delay: 0.2s; }
+    .feature:nth-child(3) { animation-delay: 0.3s; }
+    .feature:nth-child(4) { animation-delay: 0.4s; }
 
-        .form-group {
-            margin-bottom: 24px;
-        }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-            font-size: 14px;
-        }
+    .feature-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
 
-        .form-group input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: all 0.3s;
-        }
+    .feature-text { }
+    .feature-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+    .feature-desc { font-size: 12px; color: var(--muted2); line-height: 1.5; font-family: var(--mono); }
 
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
+    /* Right panel */
+    .right {
+      width: 440px; flex-shrink: 0;
+      background: var(--surface); border-left: 1px solid var(--border);
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 56px 44px;
+    }
 
-        .submit-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+    .form-header { margin-bottom: 36px; }
+    .form-title { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+    .form-sub { font-size: 13px; color: var(--muted2); font-family: var(--mono); }
 
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
+    .field { margin-bottom: 20px; }
 
-        .submit-btn:active {
-            transform: translateY(0);
-        }
+    .field label {
+      display: block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--muted); font-family: var(--mono); margin-bottom: 8px;
+    }
 
-        .links {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 1px solid #e0e0e0;
-        }
+    .field input {
+      width: 100%; padding: 13px 16px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 9px; color: var(--text); font-size: 14px;
+      font-family: var(--display); transition: border-color 0.2s, box-shadow 0.2s;
+    }
 
-        .links a {
-            display: block;
-            padding: 12px 20px;
-            margin-bottom: 10px;
-            color: #667eea;
-            text-decoration: none;
-            border: 2px solid #667eea;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
+    .field input:focus {
+      outline: none; border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+    }
 
-        .links a:hover {
-            background: #667eea;
-            color: white;
-        }
+    /* Password strength */
+    .strength-bar {
+      height: 3px; border-radius: 2px; margin-top: 8px;
+      background: rgba(255,255,255,0.06); overflow: hidden;
+    }
+    .strength-fill {
+      height: 100%; border-radius: 2px;
+      transition: width 0.4s ease, background 0.3s;
+    }
+    .strength-label { font-size: 10px; font-family: var(--mono); color: var(--muted2); margin-top: 4px; }
 
-        .security-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            margin-top: 20px;
-        }
+    .submit-btn {
+      width: 100%; padding: 14px;
+      background: var(--accent); border: none; border-radius: 9px;
+      color: var(--bg); font-size: 14px; font-weight: 700;
+      font-family: var(--display); cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      margin-top: 8px; letter-spacing: 0.5px;
+    }
 
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
+    .submit-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .submit-btn:active { transform: translateY(0); }
 
-            .info-section {
-                padding: 40px 30px;
-            }
+    .divider { height: 1px; background: var(--border); margin: 24px 0; }
 
-            .form-section {
-                padding: 40px 30px;
-            }
-        }
-    </style>
+    .links { display: flex; gap: 10px; }
+
+    .link-btn {
+      flex: 1; padding: 10px; text-align: center; font-size: 12px;
+      border: 1px solid var(--border); border-radius: 8px;
+      color: var(--muted2); text-decoration: none; font-family: var(--mono);
+      transition: all 0.15s;
+    }
+
+    .link-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .honey-note {
+      margin-top: 22px; padding: 14px;
+      background: rgba(0,229,255,0.04); border: 1px solid rgba(0,229,255,0.12);
+      border-radius: 9px; font-size: 12px; font-family: var(--mono);
+      color: var(--muted2); line-height: 1.6;
+    }
+
+    .honey-note strong { color: var(--accent); }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="info-section">
-            <h1>🔐 BLIP</h1>
-            <p>Breach-resilient Encrypted Authentication Protocol</p>
-            <ul class="features">
-                <li>Advanced honey encryption protection</li>
-                <li>Argon2id password hashing</li>
-                <li>Multi-decoy authentication system</li>
-                <li>Real-time breach detection</li>
-                <li>Comprehensive security dashboard</li>
-            </ul>
-            <div class="security-badge">
-            </div>
+
+<!-- LEFT -->
+<div class="left">
+  <div class="grid-lines"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <div class="brand">
+    <div class="wordmark">LEAP</div>
+    <div class="wordmark-full">Leakage-Resilient Encrypted Authentication Protocol</div>
+    <h2 class="headline">Your password hides among<br><span>9 convincing decoys.</span><br>Attackers can't tell which is real.</h2>
+
+    <div class="feature-list">
+      <div class="feature">
+        <div class="feature-icon">🍯</div>
+        <div class="feature-text">
+          <div class="feature-name">Honey Encryption</div>
+          <div class="feature-desc">1 real hash + 9 decoys stored together. Even a leaked DB gives attackers nothing.</div>
         </div>
-
-        <div class="form-section">
-            <h2>Create Account</h2>
-            <p class="subtitle">Join the next generation of secure authentication</p>
-            
-            <form method="POST" action="/register">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input 
-                        type="text" 
-                        id="username" 
-                        name="username" 
-                        placeholder="Enter your username"
-                        required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        placeholder="Enter a strong password"
-                        required
-                    >
-                </div>
-
-                <button type="submit" class="submit-btn">Create Account</button>
-            </form>
-
-            <div class="links">
-                <a href="/login">🔑 Test Login Security</a>
-                <a href="/dashboard">📊 View Dashboard</a>
-            </div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔑</div>
+        <div class="feature-text">
+          <div class="feature-name">Argon2id Hashing</div>
+          <div class="feature-desc">Memory-hard KDF resistant to GPU and ASIC attacks. Gold standard since 2015.</div>
         </div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🤖</div>
+        <div class="feature-text">
+          <div class="feature-name">Autonomous Security Agents</div>
+          <div class="feature-desc">Hash testing + posture improvement run automatically on every auth event.</div>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <div class="feature-text">
+          <div class="feature-name">Real-time Reporting</div>
+          <div class="feature-desc">Crack-time estimates, entropy scores, and live improvement recommendations.</div>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
+
+<!-- RIGHT -->
+<div class="right">
+  <div class="form-header">
+    <div class="form-title">Create Account</div>
+    <div class="form-sub">Honey pool generated on registration</div>
+  </div>
+
+  <form method="POST" action="/register">
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" placeholder="Enter username" required autocomplete="off"/>
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Enter a strong password" required/>
+      <div class="strength-bar"><div class="strength-fill" id="strength-fill" style="width:0%"></div></div>
+      <div class="strength-label" id="strength-label">Enter a password</div>
+    </div>
+
+    <button type="submit" class="submit-btn">Register &amp; Generate Honey Pool →</button>
+  </form>
+
+  <div class="divider"></div>
+
+  <div class="links">
+    <a href="/login"     class="link-btn">Sign In</a>
+    <a href="/dashboard" class="link-btn">Dashboard</a>
+  </div>
+
+  <div class="honey-note">
+    <strong>After registration:</strong> the Hash Testing Agent will automatically analyse your stored hash and the Security Agent will apply any needed improvements. Check the <a href="/dashboard" style="color:var(--accent)">dashboard</a> for your report.
+  </div>
+</div>
+
+<script>
+  // Password strength meter
+  document.getElementById('password').addEventListener('input', function() {
+    const v = this.value;
+    let score = 0;
+    if (v.length >= 8)  score++;
+    if (v.length >= 12) score++;
+    if (/[A-Z]/.test(v)) score++;
+    if (/[0-9]/.test(v)) score++;
+    if (/[^A-Za-z0-9]/.test(v)) score++;
+
+    const fill  = document.getElementById('strength-fill');
+    const label = document.getElementById('strength-label');
+    const pct   = (score / 5) * 100;
+    const colors = ['#ff1744','#ff9100','#ffea00','#00e676','#00e5ff'];
+    const labels = ['Very weak','Weak','Moderate','Strong','Excellent'];
+    fill.style.width      = pct + '%';
+    fill.style.background = colors[Math.max(0, score-1)] || '#4a5568';
+    label.textContent     = v.length ? labels[Math.max(0, score-1)] : 'Enter a password';
+    label.style.color     = colors[Math.max(0, score-1)] || 'var(--muted2)';
+  });
+</script>
 </body>
 </html>

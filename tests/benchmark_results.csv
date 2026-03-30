@@ -1,0 +1,7 @@
+phase,algorithm,dataset_size,wordlist,n,total_s,avg_ms,std_ms,hashes_per_sec,hits
+generation,sha256,1000,sample_1000.txt,1000,0.0008,0.0008,0.0021,1301066.62,
+verification,sha256,1000,sample_1000.txt,1000,0.0006,0.0006,0.0007,1610046.8,1
+generation,bcrypt,1000,sample_1000.txt,200,38.9649,194.8245,3.8719,5.13,
+verification,bcrypt,1000,sample_1000.txt,200,38.9186,194.593,3.5646,5.14,1
+generation,argon2id,1000,sample_1000.txt,100,8.2891,82.8908,3.43,12.06,
+verification,argon2id,1000,sample_1000.txt,100,7.6258,76.2581,3.1487,13.11,1

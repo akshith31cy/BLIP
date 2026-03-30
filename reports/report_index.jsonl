@@ -1,0 +1,7 @@
+{"report_id": "rpt_Brody_20260326163413042088", "generated_at": "2026-03-26T16:34:13.045100+00:00", "username": "Brody", "trigger": "register", "security_level": "excellent", "security_score": 85, "changes_count": 0}
+{"report_id": "rpt_jordy_20260326163656791778", "generated_at": "2026-03-26T16:36:56.792787+00:00", "username": "jordy", "trigger": "register", "security_level": "excellent", "security_score": 85, "changes_count": 0}
+{"report_id": "rpt_Broken_20260329164359660581", "generated_at": "2026-03-29T16:43:59.662565+00:00", "username": "Broken", "trigger": "register", "security_level": "excellent", "security_score": 83, "changes_count": 0}
+{"report_id": "rpt_Michael_20260329164619880568", "generated_at": "2026-03-29T16:46:19.882468+00:00", "username": "Michael", "trigger": "register", "security_level": "excellent", "security_score": 83, "changes_count": 0}
+{"report_id": "rpt_manav_20260330063129579732", "generated_at": "2026-03-30T06:31:29.588619+00:00", "username": "manav", "trigger": "register", "security_level": "excellent", "security_score": 83, "changes_count": 0}
+{"report_id": "rpt_Manav_20260330063511775326", "generated_at": "2026-03-30T06:35:11.790451+00:00", "username": "Manav", "trigger": "register", "security_level": "excellent", "security_score": 83, "changes_count": 0}
+{"report_id": "rpt_manav_20260330063533138802", "generated_at": "2026-03-30T06:35:33.142843+00:00", "username": "manav", "trigger": "login", "security_level": "excellent", "security_score": 83, "changes_count": 0}

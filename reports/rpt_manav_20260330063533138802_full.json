@@ -1,0 +1,45 @@
+{
+  "report_id": "rpt_manav_20260330063533138802",
+  "generated_at": "2026-03-30T06:35:33.142843+00:00",
+  "username": "manav",
+  "trigger": "login",
+  "hash_test": {
+    "algorithm": "argon2id",
+    "algorithm_params": {
+      "memory_kb": 65536,
+      "time_cost": 2,
+      "parallelism": 1
+    },
+    "security_score": 83,
+    "security_level": "excellent",
+    "level_reason": "Excellent \u2014 honey pool + strong memory-hard KDF",
+    "estimated_crack": "17,309 years",
+    "entropy_bits": 256,
+    "honey_pool_size": 10,
+    "dictionary_probe": {
+      "pool_size": 10,
+      "decoy_count": 9,
+      "p_decoy_first": 0.9,
+      "expected_attempts": 10,
+      "honey_confusion_gain": 3.32,
+      "simulation_note": "Attacker faces 10 indistinguishable hashes. Adds ~3.32 bits of confusion."
+    }
+  },
+  "security_changes": {
+    "changes_applied": [],
+    "flags": [],
+    "new_config": {
+      "algorithm": "argon2id",
+      "memory_kb": 65536,
+      "time_cost": 2,
+      "parallelism": 1,
+      "honey_count": 9,
+      "min_password_length": 8,
+      "require_digit": true,
+      "require_upper": false,
+      "version": 1
+    }
+  },
+  "recommendations": [],
+  "agent_runtime_s": 0.0001
+}

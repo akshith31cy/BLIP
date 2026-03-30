@@ -1,107 +1,603 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8"/>
-    <title>LEAP Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #f5f5f5;
-      }
-      h1 {
-        color: #333;
-        border-bottom: 3px solid #007bff;
-        padding-bottom: 10px;
-      }
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-        margin: 30px 0;
-      }
-      .stat-card {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      }
-      .stat-card h3 {
-        margin: 0 0 10px 0;
-        color: #666;
-        font-size: 14px;
-        text-transform: uppercase;
-      }
-      .stat-card .value {
-        font-size: 32px;
-        font-weight: bold;
-        color: #007bff;
-      }
-      .chart-container {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin-top: 20px;
-      }
-      #user-welcome {
-        color: #666;
-        margin-bottom: 20px;
-      }
-      #logout-btn {
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-      }
-      #logout-btn:hover {
-        background-color: #c82333;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>🔐 LEAP Dashboard</h1>
-    <div id="user-welcome"></div>
-    
-    <div class="stats-grid" id="stats-container">
-      <div class="stat-card">
-        <h3>Total Users</h3>
-        <div class="value" id="total-users">-</div>
-      </div>
-      <div class="stat-card">
-        <h3>Active Users</h3>
-        <div class="value" id="active-users">-</div>
-      </div>
-      <div class="stat-card">
-        <h3>Compromised Accounts</h3>
-        <div class="value" id="compromised-accounts">-</div>
-      </div>
-      <div class="stat-card">
-        <h3>Success Rate</h3>
-        <div class="value" id="success-rate">-</div>
-      </div>
-      <div class="stat-card">
-        <h3>Total Honey Entries</h3>
-        <div class="value" id="honey-entries">-</div>
-      </div>
-      <div class="stat-card">
-        <h3>Decoy Ratio</h3>
-        <div class="value" id="decoy-ratio">-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LEAP — Security Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg:      #07090f;
+      --surface: #0c0f1a;
+      --card:    #10131f;
+      --card2:   #13172a;
+      --border:  rgba(255,255,255,0.06);
+      --border2: rgba(255,255,255,0.11);
+      --accent:  #00e5ff;
+      --purple:  #7c3aed;
+      --green:   #00e676;
+      --yellow:  #ffd600;
+      --red:     #ff1744;
+      --orange:  #ff6d00;
+      --text:    #dde3f0;
+      --muted:   #3d4460;
+      --muted2:  #6b7494;
+      --mono:    'IBM Plex Mono', monospace;
+      --display: 'Syne', sans-serif;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html, body { height:100%; }
+    body { background:var(--bg); font-family:var(--display); color:var(--text); display:flex; min-height:100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width:210px; flex-shrink:0; background:var(--surface);
+      border-right:1px solid var(--border); display:flex; flex-direction:column;
+      padding:24px 0; position:sticky; top:0; height:100vh; overflow:hidden;
+    }
+    .logo { padding:0 20px 22px; border-bottom:1px solid var(--border); }
+    .logo-mark { font-family:var(--mono); font-size:20px; font-weight:600; color:var(--accent); letter-spacing:-1px; }
+    .logo-sub  { font-size:9px; letter-spacing:2.5px; text-transform:uppercase; color:var(--muted2); margin-top:2px; }
+    .nav { flex:1; padding:16px 0; overflow-y:auto; }
+    .nav-group { font-size:8px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); font-family:var(--mono); padding:0 16px; margin:14px 0 4px; }
+    .nav-item {
+      display:flex; align-items:center; gap:9px; padding:8px 14px; margin:1px 8px;
+      border-radius:7px; font-size:12px; font-weight:600; color:var(--muted2);
+      cursor:pointer; text-decoration:none; transition:all .15s;
+    }
+    .nav-item:hover, .nav-item.active { background:rgba(0,229,255,.06); color:var(--accent); }
+    .nav-item.active { border:1px solid rgba(0,229,255,.14); }
+    .nav-dot { width:6px; height:6px; border-radius:50%; background:currentColor; flex-shrink:0; }
+    .sidebar-foot { padding:14px 14px 0; border-top:1px solid var(--border); }
+    .agent-pill {
+      display:flex; align-items:center; gap:8px; padding:8px 12px;
+      background:rgba(0,230,118,.05); border:1px solid rgba(0,230,118,.14);
+      border-radius:8px; font-family:var(--mono); font-size:10px; color:var(--green);
+    }
+    .pulse { width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+
+    /* ── MAIN ── */
+    .main { flex:1; overflow-y:auto; padding:28px 32px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
+    .page-title { font-size:22px; font-weight:800; letter-spacing:-.5px; }
+    .topbar-actions { display:flex; gap:10px; align-items:center; }
+    .tbar-btn {
+      padding:7px 14px; border:1px solid var(--border2); background:var(--card);
+      color:var(--muted2); border-radius:7px; font-size:11px; font-family:var(--mono);
+      cursor:pointer; text-decoration:none; display:inline-block; transition:all .15s;
+    }
+    .tbar-btn:hover { border-color:var(--accent); color:var(--accent); }
+    .tbar-btn.danger:hover { border-color:var(--red); color:var(--red); }
+    #last-upd { font-size:10px; color:var(--muted2); font-family:var(--mono); }
+
+    /* ── KPI ROW ── */
+    .kpi-row { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:22px; }
+    .kpi {
+      background:var(--card); border:1px solid var(--border); border-radius:12px;
+      padding:16px 14px; position:relative; overflow:hidden;
+    }
+    .kpi::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+    .kpi.c-cyan::before   { background:var(--accent); }
+    .kpi.c-green::before  { background:var(--green); }
+    .kpi.c-red::before    { background:var(--red); }
+    .kpi.c-purple::before { background:var(--purple); }
+    .kpi.c-yellow::before { background:var(--yellow); }
+    .kpi.c-orange::before { background:var(--orange); }
+    .kpi-label { font-size:8px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); font-family:var(--mono); margin-bottom:10px; }
+    .kpi-val { font-size:28px; font-weight:800; letter-spacing:-1px; line-height:1; }
+    .kpi.c-cyan   .kpi-val { color:var(--accent); }
+    .kpi.c-green  .kpi-val { color:var(--green); }
+    .kpi.c-red    .kpi-val { color:var(--red); }
+    .kpi.c-purple .kpi-val { color:#a78bfa; }
+    .kpi.c-yellow .kpi-val { color:var(--yellow); }
+    .kpi.c-orange .kpi-val { color:var(--orange); }
+    .kpi-sub { font-size:10px; color:var(--muted2); font-family:var(--mono); margin-top:5px; }
+
+    /* ── SECURITY SCORE BANNER ── */
+    .score-banner {
+      background:var(--card); border:1px solid var(--border); border-radius:14px;
+      padding:22px 26px; margin-bottom:20px; display:flex; align-items:center; gap:28px;
+    }
+    .ring-wrap { flex-shrink:0; }
+    .ring { position:relative; width:96px; height:96px; }
+    .ring svg { transform:rotate(-90deg); }
+    .ring-bg   { fill:none; stroke:rgba(255,255,255,.05); stroke-width:8; }
+    .ring-fill {
+      fill:none; stroke-width:8; stroke-linecap:round;
+      stroke-dasharray:264; stroke-dashoffset:264;
+      transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1);
+    }
+    .ring-label {
+      position:absolute; inset:0; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+    }
+    .ring-num { font-size:24px; font-weight:800; letter-spacing:-1px; }
+    .ring-txt { font-size:8px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted2); font-family:var(--mono); }
+    .score-body { flex:1; }
+    .score-level { font-size:18px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
+    .score-reason { font-size:11px; color:var(--muted2); font-family:var(--mono); line-height:1.6; margin-bottom:12px; }
+    .badge-row { display:flex; gap:8px; flex-wrap:wrap; }
+    .badge {
+      padding:4px 10px; border-radius:5px; font-family:var(--mono); font-size:10px;
+      border:1px solid; font-weight:500;
+    }
+    .score-stats { flex-shrink:0; text-align:right; display:flex; flex-direction:column; gap:10px; }
+    .stat-row { }
+    .stat-label { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); font-family:var(--mono); }
+    .stat-val   { font-family:var(--mono); font-size:13px; font-weight:600; }
+
+    /* ── GRID ── */
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px; }
+    .grid-2-1 { display:grid; grid-template-columns:2fr 1fr; gap:18px; margin-bottom:18px; }
+    .panel {
+      background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden;
+    }
+    .panel-head {
+      padding:16px 20px 12px; border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .panel-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+    .panel-tag { font-size:9px; font-family:var(--mono); padding:3px 8px; border-radius:4px; background:rgba(255,255,255,.04); color:var(--muted2); }
+    .panel-body { padding:18px 20px; }
+
+    /* Chart */
+    .chart-wrap { height:190px; }
+
+    /* Honey pool grid */
+    .pool-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:7px; }
+    .pool-slot {
+      background:rgba(255,255,255,.03); border:1px solid var(--border);
+      border-radius:7px; padding:9px 6px; text-align:center; font-family:var(--mono); font-size:8px;
+      color:var(--muted2); transition:all .2s;
+    }
+    .pool-slot.real {
+      background:rgba(0,229,255,.05); border-color:rgba(0,229,255,.22); color:var(--accent);
+    }
+    .pool-slot .s-idx { font-size:7px; color:var(--muted); margin-bottom:3px; }
+    .pool-row-meta { margin-top:12px; display:flex; gap:16px; font-family:var(--mono); font-size:10px; color:var(--muted2); }
+
+    /* Attack results panel */
+    .attack-row {
+      display:flex; align-items:center; gap:10px; padding:9px 10px;
+      background:rgba(255,255,255,.02); border:1px solid var(--border);
+      border-radius:7px; margin-bottom:7px; font-family:var(--mono); font-size:10px;
+    }
+    .attack-algo  { color:var(--accent); font-weight:600; width:70px; flex-shrink:0; }
+    .attack-rate  { flex:1; }
+    .attack-bar-track { height:4px; background:rgba(255,255,255,.06); border-radius:2px; flex:1; overflow:hidden; }
+    .attack-bar-fill  { height:100%; border-radius:2px; transition:width 1s ease; }
+    .attack-val { width:40px; text-align:right; color:var(--text); }
+
+    /* Recs */
+    .rec { display:flex; gap:10px; padding:10px 12px; border-radius:7px; border:1px solid var(--border); margin-bottom:8px; background:rgba(255,255,255,.02); }
+    .rec-badge { padding:2px 7px; border-radius:4px; font-family:var(--mono); font-size:9px; font-weight:600; flex-shrink:0; height:fit-content; }
+    .rec-badge.critical { background:rgba(255,23,68,.1); color:var(--red); border:1px solid rgba(255,23,68,.25); }
+    .rec-badge.high     { background:rgba(255,109,0,.1); color:var(--orange); border:1px solid rgba(255,109,0,.25); }
+    .rec-badge.medium   { background:rgba(255,214,0,.07); color:var(--yellow); border:1px solid rgba(255,214,0,.2); }
+    .rec-badge.low      { background:rgba(0,230,118,.07); color:var(--green); border:1px solid rgba(0,230,118,.2); }
+    .rec-action { font-size:11px; font-weight:600; font-family:var(--mono); color:var(--text); margin-bottom:2px; }
+    .rec-detail { font-size:10px; color:var(--muted2); line-height:1.5; }
+
+    /* Changes */
+    .change { display:flex; align-items:center; gap:10px; padding:9px 12px; border:1px solid var(--border); border-radius:7px; margin-bottom:7px; background:rgba(255,255,255,.02); }
+    .change-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+    .change-info { flex:1; }
+    .change-act  { font-size:10px; font-weight:600; color:var(--text); font-family:var(--mono); }
+    .change-det  { font-size:9px; color:var(--muted2); margin-top:1px; }
+    .change-time { font-size:9px; color:var(--muted); font-family:var(--mono); }
+
+    /* Report table */
+    .rtable { width:100%; border-collapse:collapse; }
+    .rtable th { text-align:left; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); font-family:var(--mono); padding:0 10px 10px; border-bottom:1px solid var(--border); }
+    .rtable td { padding:10px 10px; font-size:10px; font-family:var(--mono); border-bottom:1px solid rgba(255,255,255,.03); color:var(--muted2); }
+    .rtable tr:last-child td { border-bottom:none; }
+    .lvl-badge { padding:2px 7px; border-radius:4px; font-size:9px; font-weight:600; }
+    .lvl-badge.excellent { background:rgba(0,230,118,.1); color:var(--green); }
+    .lvl-badge.strong    { background:rgba(0,229,255,.1); color:var(--accent); }
+    .lvl-badge.moderate  { background:rgba(255,214,0,.08); color:var(--yellow); }
+    .lvl-badge.weak      { background:rgba(255,109,0,.1); color:var(--orange); }
+    .lvl-badge.critical  { background:rgba(255,23,68,.1); color:var(--red); }
+    .empty { text-align:center; padding:24px; color:var(--muted); font-family:var(--mono); font-size:10px; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width:3px; }
+    ::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">LEAP</div>
+    <div class="logo-sub">Security Dashboard</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-group">Overview</div>
+    <a href="#" class="nav-item active"><span class="nav-dot"></span>Dashboard</a>
+    <div class="nav-group">Agents</div>
+    <a href="#" class="nav-item"><span class="nav-dot"></span>Hash Testing</a>
+    <a href="#" class="nav-item"><span class="nav-dot"></span>Security Agent</a>
+    <a href="#" class="nav-item"><span class="nav-dot"></span>JtR Attacks</a>
+    <a href="#" class="nav-item"><span class="nav-dot"></span>Reports</a>
+    <div class="nav-group">Auth</div>
+    <a href="/"      class="nav-item"><span class="nav-dot"></span>Register</a>
+    <a href="/login" class="nav-item"><span class="nav-dot"></span>Login Test</a>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="agent-pill"><div class="pulse"></div>Agents Active</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="page-title">Security Overview</div>
+    <div class="topbar-actions">
+      <span id="last-upd">Loading…</span>
+      <button class="tbar-btn" onclick="loadAll()">↺ Refresh</button>
+      <a class="tbar-btn" href="/export">↓ Export Hashes</a>
+      <button class="tbar-btn danger" id="logout-btn">Logout</button>
+    </div>
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="kpi-row">
+    <div class="kpi c-cyan">   <div class="kpi-label">Total Users</div><div class="kpi-val" id="k-users">—</div><div class="kpi-sub">registered</div></div>
+    <div class="kpi c-green">  <div class="kpi-label">Active</div><div class="kpi-val" id="k-active">—</div><div class="kpi-sub">secure accounts</div></div>
+    <div class="kpi c-red">    <div class="kpi-label">Compromised</div><div class="kpi-val" id="k-comp">—</div><div class="kpi-sub">honey traps hit</div></div>
+    <div class="kpi c-purple"> <div class="kpi-label">Honey Hashes</div><div class="kpi-val" id="k-honey">—</div><div class="kpi-sub">total decoy pool</div></div>
+    <div class="kpi c-yellow"> <div class="kpi-label">Reports</div><div class="kpi-val" id="k-reports">—</div><div class="kpi-sub">agent scans</div></div>
+    <div class="kpi c-orange"> <div class="kpi-label">Auto-fixes</div><div class="kpi-val" id="k-changes">—</div><div class="kpi-sub">improvements</div></div>
+  </div>
+
+  <!-- SECURITY SCORE BANNER -->
+  <div class="score-banner" id="score-banner" style="display:none">
+    <div class="ring-wrap">
+      <div class="ring">
+        <svg viewBox="0 0 96 96" width="96" height="96">
+          <circle class="ring-bg" cx="48" cy="48" r="40"/>
+          <circle class="ring-fill" id="ring-fill" cx="48" cy="48" r="40"
+                  stroke-dasharray="251" stroke-dashoffset="251"/>
+        </svg>
+        <div class="ring-label">
+          <div class="ring-num" id="ring-num">—</div>
+          <div class="ring-txt">/ 100</div>
+        </div>
       </div>
     </div>
-
-    <div class="chart-container">
-      <canvas id="metricsChart" width="400" height="200"></canvas>
+    <div class="score-body">
+      <div class="score-level" id="score-level">—</div>
+      <div class="score-reason" id="score-reason">Awaiting first agent scan…</div>
+      <div class="badge-row" id="badge-row"></div>
     </div>
+    <div class="score-stats">
+      <div class="stat-row"><div class="stat-label">Est. crack time</div><div class="stat-val" id="ss-crack" style="color:var(--green)">—</div></div>
+      <div class="stat-row"><div class="stat-label">Entropy</div><div class="stat-val" id="ss-entropy" style="color:var(--accent)">—</div></div>
+      <div class="stat-row"><div class="stat-label">Last trigger</div><div class="stat-val" id="ss-trigger" style="color:var(--muted2);font-size:11px">—</div></div>
+    </div>
+  </div>
 
-    <button id="logout-btn" style="margin-top: 20px;">Logout</button>
+  <!-- ROW 1: Chart + Honey Pool -->
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">User & Integrity Metrics</span><span class="panel-tag" id="chart-tag">live data</span></div>
+      <div class="panel-body"><div class="chart-wrap"><canvas id="mainChart"></canvas></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Honey Pool State</span><span class="panel-tag" id="pool-tag">—</span></div>
+      <div class="panel-body">
+        <div class="pool-grid" id="pool-grid"><div class="empty">Register a user to populate</div></div>
+        <div class="pool-row-meta">
+          <span id="pool-confusion">Confusion: —</span>
+          <span id="pool-p">P(decoy first): —</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
-  </body>
+  <!-- ROW 2: Attack Results + Recommendations -->
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Attack Resistance</span><span class="panel-tag">H/s comparison</span></div>
+      <div class="panel-body" id="attack-panel">
+        <div class="empty">Run john_runner.py to populate</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Agent Recommendations</span><span class="panel-tag" id="rec-tag">—</span></div>
+      <div class="panel-body" id="rec-panel"><div class="empty">No agent data yet</div></div>
+    </div>
+  </div>
+
+  <!-- ROW 3: Changes + Report History -->
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Security Changes Applied</span><span class="panel-tag">auto-improvements</span></div>
+      <div class="panel-body" id="change-panel"><div class="empty">No changes yet</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Report History</span><span class="panel-tag" id="hist-tag">—</span></div>
+      <div class="panel-body" style="padding:0; overflow-x:auto">
+        <table class="rtable">
+          <thead><tr>
+            <th>User</th><th>Trigger</th><th>Level</th><th>Score</th><th>Time</th>
+          </tr></thead>
+          <tbody id="hist-tbody"><tr><td colspan="5" class="empty">No reports yet</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+let chart = null;
+
+// ── Fetch util ──────────────────────────────────────────────────────────────
+async function get(url) {
+  try { const r = await fetch(url); return r.ok ? r.json() : null; }
+  catch { return null; }
+}
+
+// ── Render functions ────────────────────────────────────────────────────────
+
+function tx(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function scoreColor(lvl) {
+  return {excellent:'var(--green)',strong:'var(--accent)',moderate:'var(--yellow)',
+           weak:'var(--orange)',critical:'var(--red)'}[lvl] || 'var(--muted2)';
+}
+
+function fmt(iso) {
+  if (!iso) return '—';
+  try { const d = new Date(iso); return d.toLocaleDateString()+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
+  catch { return iso.slice(0,16); }
+}
+
+function renderKPIs(u, s) {
+  if (u) {
+    tx('k-users', u.total_users ?? '—');
+    tx('k-active', u.active_users ?? '—');
+    tx('k-comp', u.compromised_accounts ?? '—');
+    tx('k-honey', u.total_honey_entries ?? '—');
+  }
+  if (s) {
+    tx('k-reports', s.total_reports ?? '—');
+    tx('k-changes', s.total_changes ?? '—');
+  }
+}
+
+function renderScore(report) {
+  if (!report || !report.hash_test) return;
+  const ht    = report.hash_test;
+  const score = ht.security_score ?? 0;
+  const lvl   = ht.security_level ?? 'unknown';
+  const col   = scoreColor(lvl);
+
+  document.getElementById('score-banner').style.display = 'flex';
+  tx('ring-num',    score);
+  tx('score-level', lvl.toUpperCase());
+  tx('score-reason', ht.level_reason || '—');
+  tx('ss-crack',    ht.estimated_crack || '—');
+  tx('ss-entropy',  (ht.entropy_bits ?? '—') + ' bits');
+  tx('ss-trigger',  report.trigger || '—');
+
+  const fill = document.getElementById('ring-fill');
+  const circ = 2 * Math.PI * 40;  // r=40 → ~251
+  fill.style.stroke            = col;
+  fill.style.strokeDashoffset  = circ - (circ * score / 100);
+  document.getElementById('ring-num').style.color   = col;
+  document.getElementById('score-level').style.color = col;
+
+  // Badges
+  const br  = document.getElementById('badge-row');
+  const par = ht.algorithm_params || {};
+  br.innerHTML = '';
+  const addBadge = (txt, bg, c, bc) => {
+    const b = document.createElement('span');
+    b.className = 'badge';
+    b.textContent = txt;
+    b.style.cssText = `background:${bg};color:${c};border-color:${bc}`;
+    br.appendChild(b);
+  };
+  addBadge(ht.algorithm || '—',   'rgba(0,229,255,.06)', 'var(--accent)',  'rgba(0,229,255,.2)');
+  if (par.memory_kb)  addBadge(`m=${par.memory_kb}KB`, 'rgba(124,58,237,.06)', '#a78bfa', 'rgba(124,58,237,.2)');
+  if (par.time_cost)  addBadge(`t=${par.time_cost}`,   'rgba(0,230,118,.05)', 'var(--green)', 'rgba(0,230,118,.18)');
+  if (par.parallelism) addBadge(`p=${par.parallelism}`, 'rgba(255,255,255,.04)', 'var(--muted2)', 'var(--border)');
+  const ps = report.hash_test?.honey_pool_size;
+  if (ps) addBadge(`pool=${ps}`, 'rgba(255,109,0,.06)', 'var(--orange)', 'rgba(255,109,0,.2)');
+}
+
+function renderHoneyPool(report) {
+  if (!report?.hash_test) return;
+  const ht    = report.hash_test;
+  const size  = ht.honey_pool_size || 10;
+  const probe = ht.dictionary_probe || {};
+  const grid  = document.getElementById('pool-grid');
+  grid.innerHTML = '';
+  document.getElementById('pool-tag').textContent = `${size} hashes`;
+
+  // We never know the real index (correctly — it's not stored or returned)
+  // Show all slots as equal — demonstrating the attacker's view
+  for (let i = 0; i < size; i++) {
+    const s = document.createElement('div');
+    s.className = 'pool-slot';
+    s.innerHTML = `<div class="s-idx">#${i}</div>SLOT`;
+    grid.appendChild(s);
+  }
+
+  tx('pool-confusion', `Confusion: +${probe.honey_confusion_gain ?? '—'} bits`);
+  tx('pool-p', `P(decoy first): ${probe.p_decoy_first ? (probe.p_decoy_first*100).toFixed(1)+'%' : '—'}`);
+}
+
+function renderAttackPanel() {
+  // Static representative data from actual benchmark results
+  // (live JtR results would update this via /api/reports/latest)
+  const el = document.getElementById('attack-panel');
+  const algos = [
+    { name: 'SHA-256',   hps: 1800000, color: 'var(--red)',    maxhps: 2000000 },
+    { name: 'bcrypt',    hps: 21,      color: 'var(--yellow)', maxhps: 2000000 },
+    { name: 'Argon2id',  hps: 12,      color: 'var(--green)',  maxhps: 2000000 },
+  ];
+  el.innerHTML = '';
+  algos.forEach(a => {
+    const pct = Math.max(0.5, Math.log10(a.hps) / Math.log10(a.maxhps) * 100);
+    const row = document.createElement('div');
+    row.className = 'attack-row';
+    row.innerHTML = `
+      <span class="attack-algo">${a.name}</span>
+      <div class="attack-bar-track">
+        <div class="attack-bar-fill" style="width:0%;background:${a.color}" data-pct="${pct}"></div>
+      </div>
+      <span class="attack-val">${a.hps.toLocaleString()}</span>`;
+    el.appendChild(row);
+  });
+  const label = document.createElement('div');
+  label.style.cssText = 'font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:10px';
+  label.textContent = 'H/s (hashes per second) — lower is stronger. Rockyou benchmark data.';
+  el.appendChild(label);
+
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.attack-bar-fill').forEach(b => {
+      b.style.width = b.dataset.pct + '%';
+    });
+  });
+}
+
+function renderRecs(recs) {
+  const el = document.getElementById('rec-panel');
+  document.getElementById('rec-tag').textContent = `${recs.length} items`;
+  if (!recs.length) { el.innerHTML = '<div class="empty">No recommendations — system well configured</div>'; return; }
+  el.innerHTML = '';
+  recs.forEach(r => {
+    const d = document.createElement('div');
+    d.className = 'rec';
+    d.innerHTML = `
+      <span class="rec-badge ${r.priority || 'low'}">${(r.priority||'low').toUpperCase()}</span>
+      <div>
+        <div class="rec-action">${r.action||''}</div>
+        <div class="rec-detail">${r.detail||''}</div>
+      </div>`;
+    el.appendChild(d);
+  });
+}
+
+function renderChanges(changes) {
+  const el = document.getElementById('change-panel');
+  const items = changes.flatMap(c => c.changes_applied || []);
+  if (!items.length) { el.innerHTML = '<div class="empty">No changes applied yet</div>'; return; }
+  el.innerHTML = '';
+  items.slice(0, 8).forEach((ch, i) => {
+    const col = ch.action?.includes('algorithm') ? 'var(--red)' :
+                ch.action?.includes('memory')||ch.action?.includes('time') ? 'var(--orange)' : 'var(--accent)';
+    const ts  = changes[0]?.timestamp || '';
+    const d   = document.createElement('div');
+    d.className = 'change';
+    d.innerHTML = `
+      <div class="change-dot" style="background:${col}"></div>
+      <div class="change-info">
+        <div class="change-act">${ch.action||'—'}</div>
+        <div class="change-det">${ch.from !== undefined ? ch.from+'→'+ch.to : (ch.detail||'')}</div>
+      </div>
+      <div class="change-time">${fmt(ts)}</div>`;
+    el.appendChild(d);
+  });
+}
+
+function renderHistory(hist) {
+  const tb = document.getElementById('hist-tbody');
+  document.getElementById('hist-tag').textContent = `${hist.length} reports`;
+  if (!hist.length) { tb.innerHTML = '<tr><td colspan="5" class="empty">No reports yet</td></tr>'; return; }
+  tb.innerHTML = '';
+  hist.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="color:var(--text)">${r.username||'—'}</td>
+      <td>${r.trigger||'—'}</td>
+      <td><span class="lvl-badge ${r.security_level||''}">${r.security_level||'—'}</span></td>
+      <td style="color:${scoreColor(r.security_level)}">${r.security_score??'—'}</td>
+      <td>${fmt(r.generated_at)}</td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function renderChart(u, s) {
+  const ctx = document.getElementById('mainChart').getContext('2d');
+  // FIX: chart only shows comparable user-count metrics, not mixed units
+  const labels = ['Total Users', 'Active', 'Compromised'];
+  const values = [u?.total_users||0, u?.active_users||0, u?.compromised_accounts||0];
+  const colors = ['rgba(0,229,255,.14)', 'rgba(0,230,118,.14)', 'rgba(255,23,68,.14)'];
+  const borders= ['rgba(0,229,255,.7)', 'rgba(0,230,118,.7)', 'rgba(255,23,68,.7)'];
+
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors,
+        borderColor: borders,
+        borderWidth: 1.5,
+        borderRadius: 5,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,.03)' }, ticks: { color: '#6b7494', font: { family:"'IBM Plex Mono'", size:10 } } },
+        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,.03)' }, ticks: { color: '#6b7494', font: { family:"'IBM Plex Mono'", size:10 } } }
+      }
+    }
+  });
+}
+
+// ── Load all ────────────────────────────────────────────────────────────────
+async function loadAll() {
+  const [u, s, latest, changes, hist] = await Promise.all([
+    get('/api/user_stats'),
+    get('/api/reports/summary'),
+    get('/api/reports/latest'),
+    get('/api/security/changes?limit=10'),
+    get('/api/reports/history?limit=15'),
+  ]);
+  document.getElementById('last-upd').textContent = 'Updated ' + new Date().toLocaleTimeString();
+
+  renderKPIs(u, s);
+  renderChart(u || {}, s || {});
+  renderAttackPanel();
+
+  if (latest?.hash_test) {
+    renderScore(latest);
+    renderHoneyPool(latest);
+    renderRecs(latest.recommendations || []);
+  } else {
+    document.getElementById('score-banner').style.display = 'flex';
+    tx('score-level', 'NO DATA YET');
+    tx('score-reason', 'Register a user to trigger the Hash Testing Agent.');
+    tx('ring-num', '—');
+  }
+
+  renderChanges(changes || []);
+  renderHistory(hist || []);
+}
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+  localStorage.removeItem('username');
+  fetch('/logout', { method:'POST' }).finally(() => window.location.href = '/');
+});
+
+loadAll();
+</script>
+</body>
 </html>

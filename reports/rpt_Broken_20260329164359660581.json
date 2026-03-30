@@ -1,0 +1,32 @@
+{
+  "report_id": "rpt_Broken_20260329164359660581",
+  "timestamp": "2026-03-29T16:43:59.660581+00:00",
+  "trigger": "register",
+  "username": "Broken",
+  "algorithm": "argon2id",
+  "algorithm_params": {
+    "memory_kb": 65536,
+    "time_cost": 2,
+    "parallelism": 1
+  },
+  "honey_pool_size": 10,
+  "security_score": 83,
+  "security_level": "excellent",
+  "level_reason": "Excellent \u2014 honey pool + strong memory-hard KDF",
+  "estimated_crack_seconds": 545850263962.24,
+  "estimated_crack_human": "17,309 years",
+  "crack_rate_hps": 400,
+  "entropy_bits": 256,
+  "dictionary_probe": {
+    "pool_size": 10,
+    "decoy_count": 9,
+    "p_decoy_first": 0.9,
+    "expected_attempts": 10,
+    "honey_confusion_gain": 3.32,
+    "simulation_note": "Attacker faces 10 indistinguishable hashes. Adds ~3.32 bits of confusion."
+  },
+  "jtr_probe": null,
+  "recommendations": [],
+  "agent_runtime_s": 0.0002,
+  "extra": {}
+}

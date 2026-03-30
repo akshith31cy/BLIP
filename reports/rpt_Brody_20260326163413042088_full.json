@@ -1,0 +1,45 @@
+{
+  "report_id": "rpt_Brody_20260326163413042088",
+  "generated_at": "2026-03-26T16:34:13.045100+00:00",
+  "username": "Brody",
+  "trigger": "register",
+  "hash_test": {
+    "algorithm": "argon2id",
+    "algorithm_params": {
+      "memory_kb": 65536,
+      "time_cost": 2,
+      "parallelism": 1
+    },
+    "security_score": 85,
+    "security_level": "excellent",
+    "level_reason": "Excellent \u2014 honey encryption + strong params",
+    "estimated_crack": "17,309 years",
+    "entropy_bits": 256.0,
+    "honey_pool_size": 11,
+    "dictionary_probe": {
+      "pool_size": 11,
+      "decoy_count": 10,
+      "p_decoy_first": 0.909,
+      "expected_attempts": 11.0,
+      "honey_confusion_gain": 3.46,
+      "simulation_note": "Attacker faces 11 plausible hashes. Probability of picking decoy first: 90.9%. Adds ~3.5 bits of confusion."
+    }
+  },
+  "security_changes": {
+    "changes_applied": [],
+    "flags": [],
+    "new_config": {
+      "algorithm": "argon2id",
+      "memory_kb": 65536,
+      "time_cost": 2,
+      "parallelism": 1,
+      "honey_count": 9,
+      "min_password_length": 8,
+      "require_digit": true,
+      "require_upper": false,
+      "version": 1
+    }
+  },
+  "recommendations": [],
+  "agent_runtime_s": 0.0002
+}
